@@ -86,10 +86,11 @@ export default {
       this.roomTypeList = [...new Set(peoples.map(x => x.type))];
       // 房间类型 贸易 赤金
       this.roomTypeList.forEach(type => {
-        this.waitingList[type] = this.peopleList.filter(x => x.type == type)
+        this.waitingList[type] = {...this.peopleList.filter(x => x.type == type)}
       })
       // 每个房间 贸易1 贸易2 赤金1 赤金2
       this.roomList.forEach(type => {
+        // type = {...type, ...this.roomProperties[type.name]}
         this.chosenList[type.name] = [];
       })
     },
