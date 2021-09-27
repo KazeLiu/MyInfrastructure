@@ -42,6 +42,14 @@
         </draggable>
       </el-card>
     </div>
+    <el-card class="other">
+      <div>这个夕，她开心吗？(心情大于12) ：
+        <el-radio-group v-model="other.xiHappyIng">
+          <el-radio :label="true">开心</el-radio>
+          <el-radio :label="false">不开心</el-radio>
+        </el-radio-group>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -64,7 +72,10 @@ export default {
       // 已选名单
       chosenList: {},
       // 线条对象
-      lines: []
+      lines: [],
+      other: {
+        xiHappyIng: true
+      }
     }
   },
   mounted() {
@@ -107,14 +118,23 @@ export default {
      * @param name 干员名称
      */
     recommendation(name) {
+      // 清空线条
+      this.lines.map(line => {
+        line.remove()
+      })
       // 该干员所处的位置
       let ele = document.querySelector(`.people-tag[data-name='${name}']`).parentElement;
       // 获取应该和他一起上班的
       let self = this.peopleList.find(x => x.name == name)
       let friend = self.friend;
-      this.lines.map(line => {
-        line.remove()
-      })
+      // 特定人物
+      if (name == "夕") {
+        if (this.other.xiHappyIng) {
+          friend = self.happy
+        } else {
+          friend = self.unhappy
+        }
+      }
       if (friend) {
         this.lines = [];
         friend.forEach(friendName => {
@@ -134,7 +154,7 @@ export default {
             dash: {animation: true},
             startSocket: 'top',
             color: "red",
-            middleLabel: `请放置于${friendSelf.type}`,
+            middleLabel: friendSelf.type,
             size: 2,
           }));
         })
@@ -214,5 +234,9 @@ export default {
 .people-tag {
   user-select: none;
   margin: 2px;
+}
+
+.other {
+  margin-top: 10px;
 }
 </style>
