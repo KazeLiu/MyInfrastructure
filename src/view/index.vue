@@ -13,7 +13,9 @@
             @change="chosenListChange($event,item.name)"
             :key="item.name"
           >
-            <el-tag class="people-tag" v-for="(people,index) in chosenList[item.name]" :data-name="people.name"
+            <el-tag :disable-transitions="false" class="people-tag" v-for="(people,index) in chosenList[item.name]"
+                    :data-name="people.name"
+                    @click="recommendation(people.name)"
                     :key="item.name+'-' + index">
               {{ people.name }}
             </el-tag>
@@ -32,7 +34,8 @@
           :key="roomType"
           @end="end"
         >
-          <el-tag v-for="people in waitingList[roomType]" :data-name="people.name" class="people-tag"
+          <el-tag :disable-transitions="false" v-for="people in waitingList[roomType]" :data-name="people.name"
+                  class="people-tag"
                   :key="people.name+'-' + index">
             {{ people.name }}
           </el-tag>
@@ -43,7 +46,7 @@
 </template>
 
 <script>
-import {peoples, rooms} from '../assets/staticData'
+import {peoples, roomProperties, rooms} from '../assets/staticData'
 import LeaderLine from "leader-line-vue";
 
 export default {
@@ -52,6 +55,7 @@ export default {
   data() {
     return {
       roomList: rooms,
+      roomProperties: roomProperties,
       peopleList: peoples,
       // 房间类型
       roomTypeList: null,
@@ -82,14 +86,18 @@ export default {
       this.chosenList = {...this.chosenList}
     },
     end(event) {
+      if (event.to == event.from) {
+        return
+      }
       let toData = this.chosenList[event.to.dataset.name];
       let toType = event.to.dataset.type;
       let toName = event.item.innerText;
-      if (toData.length > this.roomList.find(x => x.name == event.to.dataset.name).max) {
+      if (toData.length > this.roomProperties[toType].max) {
         toData.splice(toData.find(x => x.name == toName), 1);
         this.waitingList[toType].push(this.peopleList.find(x => x.name == toName));
         this.$message({type: 'error', message: '超出最大限制，已删除刚刚添加干员'});
       }
+      this.chosenList = {...this.chosenList}
       this.$nextTick(() => {
         this.recommendation(toName)
       })
@@ -110,6 +118,11 @@ export default {
       if (friend) {
         this.lines = [];
         friend.forEach(friendName => {
+          // 先看是不是或 或用|隔开  只取一个进行划线
+          let friendOr = friendName.split('|');
+          if (friendOr.length > 1) {
+            friendName = friendOr[0]
+          }
           let friendSelf = this.peopleList.find(x => x.name == friendName)
           // 先看同类有没有已经放进去了 有的话就不再添加提示
           if (document.querySelector(`.chosen-area[data-type='${friendSelf.type}'] .people-tag[data-name='${friendSelf.name}']`)) {
@@ -119,6 +132,7 @@ export default {
           let endNode = friendSelf.type == self.type ? ele : document.querySelector(`.chosen-area[data-type='${friendSelf.type}']`)
           this.lines.push(LeaderLine.setLine(document.querySelector(`.people-tag[data-name='${friendName}']`), endNode, {
             dash: {animation: true},
+            startSocket: 'top',
             color: "red",
             middleLabel: `请放置于${friendSelf.type}`,
             size: 2,
@@ -128,7 +142,7 @@ export default {
           this.lines.map(line => {
             line.position()
           })
-        }, 1000)
+        }, 350)
       }
     }
   }
