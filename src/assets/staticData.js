@@ -8,15 +8,15 @@ export let peoples = [
   {name: '砾', type: '赤金', friend: ['夜烟', '斑点']},
   {name: '夜烟', type: '赤金', friend: ['砾', '斑点']},
   {name: '斑点', type: '赤金', friend: ['砾', '夜烟']},
-  {name: '刻俄柏', type: '作战记录', friend: ['红云', '稀音|帕拉斯']},
-  {name: '红云', type: '作战记录', friend: ['刻俄柏', '稀音|帕拉斯']},
+  {name: '刻俄柏', type: '作战记录', friend: ['红云'], replacementFriend: ['稀音', '帕拉斯']},
+  {name: '红云', type: '作战记录', friend: ['刻俄柏'], replacementFriend: ['稀音', '帕拉斯']},
   {name: '稀音', type: '作战记录', friend: ['刻俄柏', '红云']},
   {name: '帕拉斯', type: '作战记录', friend: ['刻俄柏', '红云']},
   {name: '火神', type: '作战记录', friend: ['泡泡', '贝娜']},
   {name: '泡泡', type: '作战记录', friend: ['火神', '贝娜']},
   {name: '贝娜', type: '作战记录', friend: ['火神', '泡泡']},
-  {name: '断罪者', type: '作战记录', friend: ['食铁兽', '红豆|白雪']},
-  {name: '食铁兽', type: '作战记录', friend: ['断罪者', '红豆|白雪']},
+  {name: '断罪者', type: '作战记录', friend: ['食铁兽'], replacementFriend: ['红豆', '白雪']},
+  {name: '食铁兽', type: '作战记录', friend: ['断罪者'], replacementFriend: ['红豆', '白雪']},
   {name: '红豆', type: '作战记录', friend: ['断罪者', '食铁兽']},
   {name: '白雪', type: '作战记录', friend: ['断罪者', '食铁兽']},
 
@@ -28,9 +28,9 @@ export let peoples = [
   {name: '柏喙', type: '贸易', friend: ['巫恋', '龙舌兰'], remark: '该组合尽量不要换'},
   {name: '龙舌兰', type: '贸易', friend: ['柏喙', '巫恋'], remark: '该组合尽量不要换'},
   {name: '安比尔', type: '贸易', friend: ['雪雉', '乌有', '夕', '桑葚'], remark: '该组合尽量换'},
-  {name: '雪雉', type: '贸易', friend: ['安比尔|空', '乌有', '夕', '桑葚'], remark: '该组合尽量换'},
+  {name: '雪雉', type: '贸易', friend: ['乌有', '夕', '桑葚'], replacementFriend: ['安比尔', '空'], remark: '该组合尽量换'},
   {name: '空', type: '贸易', friend: ['乌有', '雪雉', '夕', '桑葚'], remark: '该组合尽量换'},
-  {name: '乌有', type: '贸易', friend: ['安比尔|空', '雪雉', '夕', '桑葚'], remark: '该组合尽量换'},
+  {name: '乌有', type: '贸易', friend: ['雪雉', '夕', '桑葚'], replacementFriend: ['安比尔', '空'], remark: '该组合尽量换'},
 
   {name: '阿米娅', type: '中枢', noFriend: ['诗怀雅']},
   {name: '凯尔希', type: '中枢'},
@@ -39,9 +39,10 @@ export let peoples = [
   {
     name: '夕',
     type: '中枢',
-    friend: ['雪雉', '空|安比尔', '乌有', '桑葚', '迷迭香', '槐琥', '泡普卡', '爱丽丝', '絮雨'],
+    friend: ['雪雉', '乌有', '桑葚', '迷迭香', '槐琥', '泡普卡', '爱丽丝', '絮雨'],
+    replacementFriend: ['安比尔', '空'],
     happy: ['迷迭香', '槐琥', '泡普卡', '爱丽丝', '絮雨'],
-    unhappy: ['雪雉', '空|安比尔', '乌有', '桑葚']
+    unhappy: ['雪雉', '乌有', '桑葚']
   },
   {name: '闪击', type: '中枢'},
   {name: '灰烬', type: '中枢'},
@@ -57,7 +58,7 @@ export let peoples = [
   {name: '星极', type: '会客室'},
   {name: '艾雅法拉', type: '办公室'},
   {name: '絮雨', type: '办公室', friend: ['迷迭香', '槐琥', '泡普卡', '夕', '爱丽丝']},
-  {name: '桑葚', type: '办公室', friend: ['雪雉', '空', '乌有', '夕', '安比尔']},
+  {name: '桑葚', type: '办公室', friend: ['雪雉', '乌有', '夕'], replacementFriend: ['安比尔', '空']},
 
   {name: '爱丽丝', type: '宿舍', friend: ['迷迭香', '槐琥', '泡普卡', '夕', '絮雨']}
 ]
@@ -84,13 +85,11 @@ export let rooms = [
 
 export let roomProperties = {
   '中枢': {color: '#55efc4', peopleColor: '#00b894', max: 5},
-  '会客': {color: '#81ecec', peopleColor: '#00cec9', max: 2},
+  '会客室': {color: '#81ecec', peopleColor: '#00cec9', max: 2},
   '贸易': {color: '#74b9ff', peopleColor: '#0984e3', max: 3},
   '发电站': {color: '#a29bfe', peopleColor: '#6c5ce7', max: 1},
   '宿舍': {color: '#ffeaa7', peopleColor: '#fdcb6e', max: 5},
-  '赤金': {color: '#fab1a0', peopleColor: '#e17055', max: 1},
+  '赤金': {color: '#fab1a0', peopleColor: '#e17055', max: 3},
   '作战记录': {color: '#ff7675', peopleColor: '#d63031', max: 3},
-  '训练': {color: '#fd79a8', peopleColor: '#e84393', max: 2},
-  '加工': {color: '#636e72', peopleColor: '#2d3436', max: 1},
-
+  '办公室': {color: '#636e72', peopleColor: '#2d3436', max: 1},
 }

@@ -2,23 +2,27 @@
   <div>
     <el-card class="infrastructure-box">
       <div class="infrastructure">
-        <div v-for="(item,index) in roomList" class="room" :class="'room-'+(index+1)">
+        <div v-for="(item,index) in roomList" class="room animate__animated" :class="'room-'+(index+1)"
+             :style="{'background':item.color}">
           <div class="title">{{ item.name }}</div>
           <draggable
             :data-name="item.name"
             :data-type="item.type"
-            v-model="chosenList[item.name]"
+            :list="chosenList[item.name]"
             :group="item.type"
             class="chosen-area"
             @change="chosenListChange($event,item.name)"
             :key="item.name"
           >
-            <el-tag :disable-transitions="false" class="people-tag" v-for="(people,index) in chosenList[item.name]"
-                    :data-name="people.name"
-                    @click="recommendation(people.name)"
-                    :key="item.name+'-' + index">
+            <div :disable-transitions="false"
+                 class="people-tag animate__animated"
+                 v-for="(people,index) in chosenList[item.name]"
+                 :data-name="people.name"
+                 :style="{'background':people.peopleColor}"
+                 @click="recommendation(people.name)"
+                 :key="item.name+'-' + index">
               {{ people.name }}
-            </el-tag>
+            </div>
           </draggable>
         </div>
       </div>
@@ -29,16 +33,19 @@
           <span>{{ roomType }}</span>
         </div>
         <draggable
-          v-model="waitingList[roomType]"
+          :list="waitingList[roomType]"
           :group="roomType"
           :key="roomType"
           @end="end"
         >
-          <el-tag :disable-transitions="false" v-for="people in waitingList[roomType]" :data-name="people.name"
-                  class="people-tag"
-                  :key="people.name+'-' + index">
-            {{ people.name }}
-          </el-tag>
+          <div :disable-transitions="false"
+               v-for="people in waitingList[roomType]"
+               :data-name="people.name"
+               class="people-tag animate__animated"
+               :style="{'background':people.peopleColor}"
+               @click="activeRoomAndTag(people)"
+               :key="people.name+'-' + index">{{ people.name }}
+          </div>
         </draggable>
       </el-card>
     </div>
@@ -56,6 +63,7 @@
 <script>
 import {peoples, roomProperties, rooms} from '../assets/staticData'
 import LeaderLine from "leader-line-vue";
+import "animate.css"
 
 export default {
   name: "index",
@@ -73,6 +81,8 @@ export default {
       chosenList: {},
       // 线条对象
       lines: [],
+      // 悬浮标签使用
+      allowAnimate: true,
       other: {
         xiHappyIng: true
       }
@@ -84,34 +94,76 @@ export default {
   methods: {
     init() {
       this.roomTypeList = [...new Set(peoples.map(x => x.type))];
+      this.peopleList = this.peopleList.map(people => {
+        return {...people, ...this.roomProperties[people.type]}
+      })
+
+      // 每个房间 贸易1 贸易2 赤金1 赤金2
+      this.roomList = this.roomList.map(room => {
+        this.chosenList[room.name] = [];
+        let obj = {...room, ...this.roomProperties[room.type]}
+        return obj
+      })
+
       // 房间类型 贸易 赤金
       this.roomTypeList.forEach(type => {
-        this.waitingList[type] = {...this.peopleList.filter(x => x.type == type)}
-      })
-      // 每个房间 贸易1 贸易2 赤金1 赤金2
-      this.roomList.forEach(type => {
-        // type = {...type, ...this.roomProperties[type.name]}
-        this.chosenList[type.name] = [];
+        this.waitingList[type] = [...this.peopleList.filter(x => x.type == type)]
       })
     },
+
     chosenListChange(event, typeName) {
       this.chosenList = {...this.chosenList}
     },
+    /**
+     * 鼠标拖拽完成计算房间数量
+     * @param event
+     */
     end(event) {
       if (event.to == event.from) {
         return
       }
       let toData = this.chosenList[event.to.dataset.name];
       let toType = event.to.dataset.type;
-      let toName = event.item.innerText;
+      let toName = event.item.innerText.trim();
       if (toData.length > this.roomProperties[toType].max) {
-        toData.splice(toData.find(x => x.name == toName), 1);
+        toData.splice(toData.findIndex(x => x.name == toName), 1);
         this.waitingList[toType].push(this.peopleList.find(x => x.name == toName));
         this.$message({type: 'error', message: '超出最大限制，已删除刚刚添加干员'});
+      } else {
+        this.chosenList = {...this.chosenList}
+        this.$nextTick(() => {
+          this.recommendation(toName)
+        })
       }
-      this.chosenList = {...this.chosenList}
-      this.$nextTick(() => {
-        this.recommendation(toName)
+    },
+    /**
+     * 悬浮添加相关人员数据
+     * @param people
+     */
+    activeRoomAndTag(people) {
+      if (!people.friend) {
+        return
+      }
+      if (!this.allowAnimate) {
+        return
+      }
+      this.allowAnimate = false
+      let activeDom = []
+      // 如果有或者replacementFriend字段 取第一个.
+      let friend = people.friend;
+      if (people.replacementFriend) {
+        friend = [...friend, people.replacementFriend[0]];
+      }
+      friend.forEach(friendName => {
+        activeDom.push(document.querySelector(`.people-tag[data-name='${friendName}']`));
+      })
+      activeDom.forEach(element => {
+        element.classList.add('animate__heartBeat')
+        element.addEventListener('animationend', () => {
+          element.classList.remove('animate__heartBeat')
+          this.allowAnimate = true;
+          element.removeEventListener('animationend', () => {})
+        });
       })
     },
     /**
@@ -128,6 +180,10 @@ export default {
       // 获取应该和他一起上班的
       let self = this.peopleList.find(x => x.name == name)
       let friend = self.friend;
+      // 如果有或者replacementFriend字段 取第一个
+      if (self.replacementFriend) {
+        friend = [...friend, self.replacementFriend[0]];
+      }
       // 特定人物
       if (name == "夕") {
         if (this.other.xiHappyIng) {
@@ -153,8 +209,8 @@ export default {
           let endNode = friendSelf.type == self.type ? ele : document.querySelector(`.chosen-area[data-type='${friendSelf.type}']`)
           this.lines.push(LeaderLine.setLine(document.querySelector(`.people-tag[data-name='${friendName}']`), endNode, {
             dash: {animation: true},
-            startSocket: 'top',
-            color: "red",
+            startSocket: 'right',
+            color: "#23ade5",
             middleLabel: friendSelf.type,
             size: 2,
           }));
@@ -163,7 +219,7 @@ export default {
           this.lines.map(line => {
             line.position()
           })
-        }, 350)
+        }, 1100)
       }
     }
   }
@@ -184,7 +240,7 @@ export default {
     border: 1px solid #fff;
     text-align: center;
     position: relative;
-
+    transition: all 1s;
 
     .title {
       position: absolute;
@@ -192,6 +248,7 @@ export default {
       left: 5px;
       color: #fff;
       user-select: none;
+      text-shadow: 0 0 5px black;
     }
 
     .chosen-area {
@@ -235,6 +292,13 @@ export default {
 .people-tag {
   user-select: none;
   margin: 2px;
+  color: #fff;
+  text-shadow: 0 0 5px black;
+  transition: all 1s;
+  display: block;
+  padding: 3px 7px;
+  text-align: center;
+  border-radius: 3px;
 }
 
 .other {
