@@ -2,16 +2,16 @@ export let peoples = [
   {name: '清流', type: '赤金', friend: ['异客', '温蒂', 'Lancet-2', '森蚺']},
   {name: '异客', type: '赤金', friend: ['清流', '温蒂', 'Lancet-2', '森蚺']},
   {name: '温蒂', type: '赤金', friend: ['清流', '异客', 'Lancet-2', '森蚺']},
-  {name: '迷迭香', type: '赤金', friend: ['槐琥', '泡普卡', '夕', '爱丽丝', '絮雨']},
-  {name: '槐琥', type: '赤金', friend: ['迷迭香', '泡普卡', '夕', '爱丽丝', '絮雨']},
-  {name: '泡普卡', type: '赤金', friend: ['迷迭香', '槐琥', '夕', '爱丽丝', '絮雨']},
+  {name: '迷迭香', type: '赤金', friend: ['槐琥', '梅尔', '夕', '爱丽丝', '絮雨']},
+  {name: '槐琥', type: '赤金', friend: ['迷迭香', '梅尔', '夕', '爱丽丝', '絮雨']},
+  {name: '梅尔', type: '赤金', friend: ['迷迭香', '槐琥', '夕', '爱丽丝', '絮雨']},
   {name: '砾', type: '赤金', friend: ['夜烟', '斑点']},
   {name: '夜烟', type: '赤金', friend: ['砾', '斑点']},
   {name: '斑点', type: '赤金', friend: ['砾', '夜烟']},
-  {name: '刻俄柏', type: '作战记录', friend: ['红云'], replacementFriend: ['稀音', '帕拉斯']},
-  {name: '红云', type: '作战记录', friend: ['刻俄柏'], replacementFriend: ['稀音', '帕拉斯']},
-  {name: '稀音', type: '作战记录', friend: ['刻俄柏', '红云']},
-  {name: '帕拉斯', type: '作战记录', friend: ['刻俄柏', '红云']},
+  {name: '帕拉斯', type: '作战记录', friend: ['红云'], replacementFriend: ['稀音', '刻俄柏']},
+  {name: '红云', type: '作战记录', friend: ['帕拉斯'], replacementFriend: ['稀音', '刻俄柏']},
+  {name: '稀音', type: '作战记录', friend: ['帕拉斯', '红云']},
+  {name: '刻俄柏', type: '作战记录', friend: ['帕拉斯', '红云']},
   {name: '火神', type: '作战记录', friend: ['泡泡', '贝娜']},
   {name: '泡泡', type: '作战记录', friend: ['火神', '贝娜']},
   {name: '贝娜', type: '作战记录', friend: ['火神', '泡泡']},
@@ -27,10 +27,9 @@ export let peoples = [
   {name: '巫恋', type: '贸易', friend: ['柏喙', '龙舌兰'], remark: '该组合尽量不要换'},
   {name: '柏喙', type: '贸易', friend: ['巫恋', '龙舌兰'], remark: '该组合尽量不要换'},
   {name: '龙舌兰', type: '贸易', friend: ['柏喙', '巫恋'], remark: '该组合尽量不要换'},
-  {name: '安比尔', type: '贸易', friend: ['雪雉', '乌有', '夕', '桑葚'], remark: '该组合尽量换'},
-  {name: '雪雉', type: '贸易', friend: ['乌有', '夕', '桑葚'], replacementFriend: ['安比尔', '空'], remark: '该组合尽量换'},
-  {name: '空', type: '贸易', friend: ['乌有', '雪雉', '夕', '桑葚'], remark: '该组合尽量换'},
-  {name: '乌有', type: '贸易', friend: ['雪雉', '夕', '桑葚'], replacementFriend: ['安比尔', '空'], remark: '该组合尽量换'},
+  {name: '安比尔', type: '贸易', friend: ['雪雉', '空'], remark: '该组合尽量换'},
+  {name: '雪雉', type: '贸易', friend: ['安比尔', '空'], replacementFriend: ['安比尔', '空'], remark: '该组合尽量换'},
+  {name: '空', type: '贸易', friend: ['安比尔', '雪雉'], remark: '该组合尽量换'},
 
   {name: '阿米娅', type: '中枢', noFriend: ['诗怀雅']},
   {name: '凯尔希', type: '中枢'},
@@ -39,10 +38,8 @@ export let peoples = [
   {
     name: '夕',
     type: '中枢',
-    friend: ['雪雉', '乌有', '桑葚', '迷迭香', '槐琥', '泡普卡', '爱丽丝', '絮雨'],
-    replacementFriend: ['安比尔', '空'],
-    happy: ['迷迭香', '槐琥', '泡普卡', '爱丽丝', '絮雨'],
-    unhappy: ['雪雉', '乌有', '桑葚']
+    friend: ['迷迭香', '槐琥', '梅尔', '爱丽丝', '絮雨'],
+    happy: ['迷迭香', '槐琥', '梅尔', '爱丽丝', '絮雨']
   },
   {name: '闪击', type: '中枢'},
   {name: '灰烬', type: '中枢'},
@@ -57,10 +54,9 @@ export let peoples = [
   {name: '陈', type: '会客室'},
   {name: '星极', type: '会客室'},
   {name: '艾雅法拉', type: '办公室'},
-  {name: '絮雨', type: '办公室', friend: ['迷迭香', '槐琥', '泡普卡', '夕', '爱丽丝']},
-  {name: '桑葚', type: '办公室', friend: ['雪雉', '乌有', '夕'], replacementFriend: ['安比尔', '空']},
+  {name: '絮雨', type: '办公室', friend: ['迷迭香', '槐琥', '梅尔', '夕', '爱丽丝']},
 
-  {name: '爱丽丝', type: '宿舍', friend: ['迷迭香', '槐琥', '泡普卡', '夕', '絮雨']}
+  {name: '爱丽丝', type: '宿舍', friend: ['迷迭香', '槐琥', '梅尔', '夕', '絮雨']}
 ]
 
 export let rooms = [
