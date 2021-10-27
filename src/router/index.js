@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 import Index from '../view/index'
 
 let router = new VueRouter({
-  mode: 'history',
+  // mode: 'history',
   routes: [{
     path: '/',
     component: Index
