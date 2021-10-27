@@ -2,7 +2,7 @@
   <div>
     <el-card class="infrastructure-box">
       <div class="infrastructure">
-        <div v-for="(item,index) in roomList" class="room animate__animated" :class="'room-'+(index+1)"
+        <div v-for="(item,index) in roomList" :key="index"  class="room animate__animated" :class="'room-'+(index+1)"
              :style="{'background':item.color}">
           <div class="title">{{ item.name }}</div>
           <draggable
@@ -28,7 +28,7 @@
       </div>
     </el-card>
     <div class="people">
-      <el-card class="people-card" shadow="hover" v-for="(roomType,index) in roomTypeList">
+      <el-card class="people-card" :key="index" shadow="hover" v-for="(roomType,index) in roomTypeList">
         <div slot="header">
           <span>{{ roomType }}</span>
         </div>
